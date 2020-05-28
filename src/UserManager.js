@@ -11,6 +11,7 @@ import { SessionMonitor } from './SessionMonitor.js';
 import { TokenRevocationClient } from './TokenRevocationClient.js';
 import { TokenClient } from './TokenClient.js';
 import { JoseUtil } from './JoseUtil.js';
+import { PopupWindow } from './PopupWindow.js'
 
 
 export class UserManager extends OidcClient {
@@ -44,6 +45,9 @@ export class UserManager extends OidcClient {
         this._tokenRevocationClient = new TokenRevocationClientCtor(this._settings);
         this._tokenClient = new TokenClientCtor(this._settings);
         this._joseUtil = joseUtil;
+
+        // Keep reference to the popup window in order to close it on demand.
+        this._popup = null;
     }
 
     get _redirectNavigator() {
@@ -140,6 +144,13 @@ export class UserManager extends OidcClient {
             return user;
         });
     }
+
+    closePopup() {
+        if (this._popup instanceof PopupWindow) {
+            this._popup.close();
+        }
+    }
+
     signinPopupCallback(url) {
         return this._signinCallback(url, this._popupNavigator).then(user => {
             if (user) {
@@ -378,6 +389,11 @@ export class UserManager extends OidcClient {
 
         return navigator.prepare(navigatorParams).then(handle => {
             Log.debug("UserManager._signinStart: got navigator window handle");
+
+            if (handle instanceof PopupWindow)
+            {
+                this._popup = handle;                
+            }
 
             return this.createSigninRequest(args).then(signinRequest => {
                 Log.debug("UserManager._signinStart: got signin request");

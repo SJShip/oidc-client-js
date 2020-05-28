@@ -6,7 +6,6 @@ import { UrlUtility } from './UrlUtility.js';
 
 const CheckForPopupClosedInterval = 500;
 const DefaultPopupFeatures = 'location=no,toolbar=no,width=500,height=500,left=100,top=100;';
-//const DefaultPopupFeatures = 'location=no,toolbar=no,width=500,height=500,left=100,top=100;resizable=yes';
 
 const DefaultPopupTarget = "_blank";
 
